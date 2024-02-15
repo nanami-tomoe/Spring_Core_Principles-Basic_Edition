@@ -87,3 +87,32 @@ public class AppConfig {
 - 이전에는 개발자가 필요한 객체를 직접 조회 -> 이제부터는 스프링 컨테이너를 통해 스프링 빈 찾기
   - `applicationContext.getBean()`
 ---
+# 스프링 컨테이너와 스프링 빈
+## 스프링 컨테이너 생성
+- `ApplicationContext`를 스프링 컨테이너라 한다
+- `ApplicationContext`는 인터페이스 -> `new AnnotationConfigApplicationContext(AppConfig.class);` 클래스는 구현체
+### 스프링 컨테이너 생성 과정
+1. 스프링 컨테이너 생성(`AppConfig.class`를 구성 정보로 저장)
+2. 스프링 빈 등록(빈 이름은 메서드 이름을 사용, 직접 부여도 가능. 빈 이름은 겹치면 안됨.)
+3. 스프링 빈 의존관계 성정
+**정리**: 스프링 컨테이너를 생성하고, 설정(구성) 정보를 참고해서 스프링 빈도 등록하고, 의존관계도 성정했다. 이제 스프링 컨테이너에서 데이터를 조회해보자.
+## 컨테이너에 등록된 모든 빈 조회
+- 모든 빈 출력하기
+  - `ac.getBeanDefiniitionNames()`: 스프링에 등록된 모든 빈 이름을 조회한다.
+  - `ac.getBean`: 빈 이름으로 빈 객체(인스턴스)를 조회한다.
+- 애플리케이션 빈 출력하기
+  - 스프링이 내부에서 사용하는 빈은 `getRole()`로 구분할 수 있다.
+    - 	`ROLE_APPLICATION`: 일반적으로 사용자가 정의한 빈
+    - 	`ROLE_INFRASTRUCTURE`: 스프링이 내부에서 사용하는 빈
+## 스프링 빈 조회 - 기본
+- `ac.getBean(빈이름, 타입)`
+- `ac.getean(타입)`
+- 조회 대상 스프링 빈이 없으면 예외 발생
+  - `NoSuchBeanDefinitionException: No bean named 'xxxxx' avilable`
+> 참고: 구체 타입으로 조회하면 변경시 유연성이 떨어진다.
+## 스프링 빈 조회 - 동일한 타입이 둘 이상
+- 동일한 타입이 둘 이상이면 오류가 발생하므로 빈 이름을 지정하자.
+- `ac.getBeanOfType()`을 사용하면 해당 타입의 모든 빈을 조회할 수 있다.
+## 스프링 빈 조회 - 상속 관계
+- 부모 타입으로 조회하면, 자식 타입도 함께 조회한다.
+- 그래서 모든 자바 객체의 최고 부모인 Object 타입으로 조회하면, 모든 스프링 빈을 조회한다.
